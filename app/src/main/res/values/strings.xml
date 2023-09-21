@@ -14,5 +14,6 @@
     <string name="keep_connection">Keep me connected</string>
     <string name="username">Username</string>
     <string name="distance">Distance</string>
+    <string name="cars_near_your">Cars near your</string>
 
 </resources>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#a9a9a9"
-    android:ntext=".HomeActivity">
+    tools:context=".HomeActivity">
 
     <LinearLayout
         android:id="@+id/topbar"
@@ -78,10 +78,38 @@
         android:id="@+id/distanceKM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="10km"
+        android:text="20km"
         app:layout_constraintEnd_toEndOf="@id/distanceTxt"
         app:layout_constraintStart_toStartOf="@id/distanceTxt"
         app:layout_constraintTop_toBottomOf="@id/distanceTxt" />
 
+    <TextView
+        android:id="@+id/advertiseTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/topbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/distanceTxt"
+        android:layout_marginTop="5dp"
+        android:text="@string/cars_near_your"
+        android:textSize="35sp"
+        android:textColor="@color/black"
+        />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/distanceSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@id/advertiseTitle"
+        app:layout_constraintTop_toBottomOf="@id/distanceKM"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:thumb="@drawable/seekbar_thumb"
+        android:progressDrawable="@drawable/seekbar_progress"
+        android:splitTrack="false"
+        android:max="100"
+        android:progress="20"
+        android:visibility="gone"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
