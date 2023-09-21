@@ -1,14 +1,23 @@
 package com.example.carbnb
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.cardview.widget.CardView
 import com.example.carbnb.databinding.ActivityHomeBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.values
+import com.google.firebase.ktx.Firebase
 
 class HomeActivity : AppCompatActivity() {
 
@@ -17,7 +26,13 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var profileButton : CardView
     private lateinit var distanceButton : ImageView
     private lateinit var distanceKM : TextView
+    private lateinit var username : TextView
     private lateinit var seekBar: AppCompatSeekBar
+
+    private val userID = FirebaseAuth.getInstance().currentUser!!.uid
+    private val database = Firebase.database
+    private val userData = database.getReference("Users")
+    private lateinit var name : String
     private var km = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,16 +42,45 @@ class HomeActivity : AppCompatActivity() {
         profileButton = binding.profile
         distanceButton = binding.locationButton
         distanceKM = binding.distanceKM
+        username = binding.username
     }
 
     override fun onResume() {
         super.onResume()
-        seekBar = binding.distanceSeekBar
 
+        logUsername()
+
+        seekBar = binding.distanceSeekBar
         distanceButton.setOnClickListener {
             seekBar.visibility = View.VISIBLE
         }
 
+        initSeekbar()
+
+        profileButton.setOnClickListener {
+            val profileActivity = Intent(this, ProfileActivity::class.java)
+            //intent.putExtra("userID", userID)
+            //intent.putExtra("username", name)
+            launcher.launch(profileActivity)
+        }
+    }
+
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if(it.resultCode == Activity.RESULT_OK){
+            Toast.makeText(this, "Changes applied", Toast.LENGTH_SHORT).show()
+        }
+        if (it.resultCode == Activity.RESULT_CANCELED){
+            Toast.makeText(this, "Changes not applied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun logUsername(){
+        userData.child(userID).get().addOnSuccessListener {
+            name = it.child("name").value.toString()
+            username.text = name
+        }
+    }
+    private fun initSeekbar(){
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 var string = seekBar?.progress.toString() + "KM"
@@ -53,7 +97,6 @@ class HomeActivity : AppCompatActivity() {
             }
 
         })
-
 
     }
 }

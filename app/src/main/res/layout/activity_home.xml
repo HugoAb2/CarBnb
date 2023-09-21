@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -29,6 +29,7 @@
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -41,7 +42,7 @@
             android:id="@+id/profile"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:backgroundTint="@color/black">
 
             <ImageView
@@ -91,7 +92,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/distanceTxt"
         android:layout_marginTop="5dp"
-        android:text="@string/cars_near_your"
+        android:text="@string/cars_near_you"
         android:textSize="35sp"
         android:textColor="@color/black"
         />
