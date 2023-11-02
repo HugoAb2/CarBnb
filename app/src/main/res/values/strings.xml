@@ -18,5 +18,7 @@
     <string name="useremail">UserEmail@</string>
     <string name="my_profile">My Profile</string>
     <string name="advertise_here">advertise here</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="delete_account">Delete Account</string>
 
 </resources>

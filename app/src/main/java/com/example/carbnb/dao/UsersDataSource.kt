@@ -19,7 +19,7 @@ class UsersDataSource {
                 "******",
                 ArrayList<String>(),
                 ArrayList<String>(),
-                R.drawable.ic_noprofile))
+                R.drawable.whind))
 
             return list
         }

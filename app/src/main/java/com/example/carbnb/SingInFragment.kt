@@ -10,6 +10,8 @@ import android.widget.Toast
 import com.example.carbnb.R
 import com.example.carbnb.databinding.FragmentSingInBinding
 import com.example.carbnb.HomeActivity
+import com.example.carbnb.dao.UsersDataSource
+import com.example.carbnb.model.User
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
@@ -23,9 +25,10 @@ class SingInFragment : Fragment(R.layout.fragment_sing_in) {
     private lateinit var connection : CheckBox
     private lateinit var singinButton : Button
 
-    private val auth = FirebaseAuth.getInstance()
+    //private val auth = FirebaseAuth.getInstance()
 
-    //private val usersList : MutableList<User> = UsersDataSource.createUsersList()
+    private val usersList : MutableList<User> = UsersDataSource.createUsersList()
+    private lateinit var userIn : User;
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,12 +44,13 @@ class SingInFragment : Fragment(R.layout.fragment_sing_in) {
         super.onResume()
         singinButton.setOnClickListener{
             if (nullVerify()){
-                login(email.text.toString(),password.text.toString())
+                if(findUser() != null) executeLogin()
+                //login(email.text.toString(),password.text.toString())
             }
         }
     }
 
-    private fun login(email: String, password:String){
+    /*private fun login(email: String, password:String){
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { authentication ->
                 if (authentication.isSuccessful){
@@ -55,7 +59,7 @@ class SingInFragment : Fragment(R.layout.fragment_sing_in) {
             }.addOnFailureListener { exception ->
                 throwErrorMessage(exception)
             }
-    }
+    }*/
 
     private fun throwErrorMessage(exception: Exception){
         val errorMessage = when (exception) {
@@ -69,6 +73,7 @@ class SingInFragment : Fragment(R.layout.fragment_sing_in) {
 
     private fun executeLogin(){
         val intent = Intent(requireContext(), HomeActivity::class.java)
+        intent.putExtra("user", userIn)
         requireActivity().apply {
             startActivity(intent)
             finish()
@@ -84,7 +89,7 @@ class SingInFragment : Fragment(R.layout.fragment_sing_in) {
     }
 
 
-    /*
+
     private fun findUser() : User?{
         val user = usersList.find { email.text.toString() == it.email }
         return if (user == null ) {
@@ -96,9 +101,10 @@ class SingInFragment : Fragment(R.layout.fragment_sing_in) {
                     null
                 }
                 else {
+                    userIn = user
                     user
                 }
         }
     }
-     */
+
 }

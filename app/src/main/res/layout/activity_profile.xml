@@ -47,7 +47,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="vertical"
-
         android:layout_marginHorizontal="40dp"
         android:gravity="center_horizontal"
         >
@@ -65,24 +64,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/username"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:layout_marginTop="5dp"/>
 
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/useremail"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/password"
+            android:textSize="25sp"
+            android:layout_marginTop="5dp"/>
 
         <Button
-            android:id="@+id/advertiseButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/saveChangesButton"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/bg_button"
             android:textColor="@color/white"
             android:padding="15dp"
-            android:text="@string/advertise_here"/>
+            android:text="@string/save_changes"/>
+
+        <Button
+            android:id="@+id/deleteAccountButton"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_redbutton"
+            android:textColor="@color/white"
+            android:padding="15dp"
+            android:text="@string/delete_account"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

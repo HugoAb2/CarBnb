@@ -13,26 +13,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.cardview.widget.CardView
 import com.example.carbnb.databinding.ActivityHomeBinding
+import com.example.carbnb.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.values
 import com.google.firebase.ktx.Firebase
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {    
 
     private lateinit var binding : ActivityHomeBinding
 
+    private lateinit var profileImage: ImageView
     private lateinit var profileButton : CardView
     private lateinit var distanceButton : ImageView
     private lateinit var distanceKM : TextView
     private lateinit var username : TextView
     private lateinit var seekBar: AppCompatSeekBar
 
-    private val userID = FirebaseAuth.getInstance().currentUser!!.uid
-    private val database = Firebase.database
-    private val userData = database.getReference("Users")
-    private lateinit var name : String
+    //private val userID = FirebaseAuth.getInstance().currentUser!!.uid
+    //private val database = Firebase.database
+    //private val userData = database.getReference("Users")
+    private lateinit var userIn : User
     private var km = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,15 +42,19 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         profileButton = binding.profile
+        profileImage = binding.profileImage
         distanceButton = binding.locationButton
         distanceKM = binding.distanceKM
         username = binding.username
+
+        @Suppress("DEPRECATION")
+        userIn = intent.getSerializableExtra("user") as User
     }
 
     override fun onResume() {
         super.onResume()
 
-        logUsername()
+        logUserData()
 
         seekBar = binding.distanceSeekBar
         distanceButton.setOnClickListener {
@@ -59,8 +65,7 @@ class HomeActivity : AppCompatActivity() {
 
         profileButton.setOnClickListener {
             val profileActivity = Intent(this, ProfileActivity::class.java)
-            //intent.putExtra("userID", userID)
-            //intent.putExtra("username", name)
+            profileActivity.putExtra("user", userIn)
             launcher.launch(profileActivity)
         }
     }
@@ -74,11 +79,13 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun logUsername(){
-        userData.child(userID).get().addOnSuccessListener {
+    private fun logUserData(){
+        /*userData.child(userID).get().addOnSuccessListener {
             name = it.child("name").value.toString()
             username.text = name
-        }
+        }*/
+        username.text = userIn.name
+        if (userIn.profile != null) profileImage.setImageResource(userIn.profile!!)
     }
     private fun initSeekbar(){
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
