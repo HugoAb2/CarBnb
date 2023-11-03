@@ -6,5 +6,8 @@
     <color name="dark_orange">#F3AC69</color>
     <color name="sixty_opacity_white">#8CFFFFFF</color>
     <color name="red">#8B0000</color>
+    <color name="green">#20B2AA</color>
+    <color name="darkgray_background_color">#171717</color>
+    <color name="lightgray_background_color">#444444</color>
 
 </resources>

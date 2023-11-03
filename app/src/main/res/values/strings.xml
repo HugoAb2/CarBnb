@@ -20,5 +20,9 @@
     <string name="advertise_here">advertise here</string>
     <string name="save_changes">Save Changes</string>
     <string name="delete_account">Delete Account</string>
+    <string name="local">Local</string>
+    <string name="description">Description</string>
+    <string name="rent">Rent</string>
+    <string name="_50_00">$50,00</string>
 
 </resources>

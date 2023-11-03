@@ -71,12 +71,8 @@ class SingUpFragment : Fragment(R.layout.fragment_sing_up) {
         return User(
             auth.currentUser!!.uid,
             name.text.toString(),
-            age.text.toString(),
-            country.text.toString(),
             email.text.toString(),
             password.text.toString(),
-            ArrayList<String>(),
-            ArrayList<String>(),
             null
         )
     }
@@ -84,12 +80,8 @@ class SingUpFragment : Fragment(R.layout.fragment_sing_up) {
     private fun addUserData(user: User){
         val userMap = hashMapOf(
             "name" to user.name,
-            "age" to user.age,
-            "country" to user.country,
             "email" to user.email,
             "password" to user.password,
-            "comments" to ArrayList<String>(),
-            "friends" to ArrayList<String>(),
             "profile" to null
         )
         database.getReference("Users/${user.id}").setValue(userMap)

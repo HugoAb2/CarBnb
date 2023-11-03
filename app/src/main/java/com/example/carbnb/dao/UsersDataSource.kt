@@ -13,12 +13,8 @@ class UsersDataSource {
             list.add(User(
                 "U7gHrfN7NLPLgvf7FI11Sk8dbvI2",
                 "adm",
-                "99",
-                "Brazil",
                 "adm@gmail.com",
                 "******",
-                ArrayList<String>(),
-                ArrayList<String>(),
                 R.drawable.whind))
 
             return list
