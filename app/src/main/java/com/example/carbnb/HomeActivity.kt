@@ -72,7 +72,14 @@ class HomeActivity : AppCompatActivity() {
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if(it.resultCode == Activity.RESULT_OK){
-            Toast.makeText(this, "Changes applied", Toast.LENGTH_SHORT).show()
+            val data = it.data
+            if (data != null && data.getBooleanExtra("delete", false)) {
+                val deleteIntent = Intent(this, LoginActivity::class.java)
+                startActivity(deleteIntent)
+                finish()
+                Toast.makeText(this, "Profile Deleted", Toast.LENGTH_SHORT).show()
+            }
+            else Toast.makeText(this, "Changes applied", Toast.LENGTH_SHORT).show()
         }
         if (it.resultCode == Activity.RESULT_CANCELED){
             Toast.makeText(this, "Changes not applied", Toast.LENGTH_SHORT).show()
