@@ -24,5 +24,17 @@
     <string name="description">Description</string>
     <string name="rent">Rent</string>
     <string name="_50_00">$50,00</string>
+    <string name="scheduling">Scheduling</string>
+    <string name="location_text">Location Text</string>
+    <string name="select_the_desired_date">Select the desired date</string>
+    <string name="day_month">Day / Month</string>
+    <string name="description_example">Old but gold car, available for the weekends and holidays</string>
+    <string name="digit_message">Digit Message</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="advertise">Advertise</string>
+    <string name="type_the_model_of_your_car">Type the model of your car</string>
+    <string name="type_description">Type description</string>
+    <string name="google_maps_view">Google Maps View</string>
 
 </resources>

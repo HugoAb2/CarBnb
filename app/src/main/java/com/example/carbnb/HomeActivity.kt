@@ -12,14 +12,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentContainerView
 import com.example.carbnb.databinding.ActivityHomeBinding
 import com.example.carbnb.model.User
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.values
-import com.google.firebase.ktx.Firebase
 
 class HomeActivity : AppCompatActivity() {    
 
@@ -47,6 +41,7 @@ class HomeActivity : AppCompatActivity() {
         distanceButton = binding.locationButton
         distanceKM = binding.distanceKM
         username = binding.username
+
         @Suppress("DEPRECATION")
         userIn = intent.getSerializableExtra("user") as User
     }
@@ -57,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
         logUserData()
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, AdvertisesListFragment())
+            .replace(R.id.fragmentContainer, FeedFragment())
             .commit()
 
         seekBar = binding.distanceSeekBar
@@ -83,7 +78,7 @@ class HomeActivity : AppCompatActivity() {
                 finish()
                 Toast.makeText(this, "Profile Deleted", Toast.LENGTH_SHORT).show()
             }
-            else Toast.makeText(this, "Changes applied", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
         }
         if (it.resultCode == Activity.RESULT_CANCELED){
             Toast.makeText(this, "Changes not applied", Toast.LENGTH_SHORT).show()
