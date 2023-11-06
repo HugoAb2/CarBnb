@@ -14,6 +14,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.cardview.widget.CardView
 import com.example.carbnb.databinding.ActivityHomeBinding
 import com.example.carbnb.model.User
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {    
 
@@ -21,16 +22,14 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var profileImage: ImageView
     private lateinit var profileButton : CardView
-    private lateinit var distanceButton : ImageView
-    private lateinit var distanceKM : TextView
     private lateinit var username : TextView
-    private lateinit var seekBar: AppCompatSeekBar
+    private lateinit var bottomNav : BottomNavigationView
 
     //private val userID = FirebaseAuth.getInstance().currentUser!!.uid
     //private val database = Firebase.database
     //private val userData = database.getReference("Users")
     private lateinit var userIn : User
-    private var km = 0;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -38,9 +37,13 @@ class HomeActivity : AppCompatActivity() {
 
         profileButton = binding.profile
         profileImage = binding.profileImage
-        distanceButton = binding.locationButton
-        distanceKM = binding.distanceKM
         username = binding.username
+        bottomNav = binding.bottomNav
+        initBottomNav()
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, FeedFragment())
+            .commit()
 
         @Suppress("DEPRECATION")
         userIn = intent.getSerializableExtra("user") as User
@@ -51,22 +54,13 @@ class HomeActivity : AppCompatActivity() {
 
         logUserData()
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, FeedFragment())
-            .commit()
-
-        seekBar = binding.distanceSeekBar
-        distanceButton.setOnClickListener {
-            seekBar.visibility = View.VISIBLE
-        }
-
-        initSeekbar()
-
         profileButton.setOnClickListener {
             val profileActivity = Intent(this, ProfileActivity::class.java)
             profileActivity.putExtra("user", userIn)
             launcher.launch(profileActivity)
         }
+
+
     }
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -93,23 +87,26 @@ class HomeActivity : AppCompatActivity() {
         username.text = userIn.name
         if (userIn.profile != null) profileImage.setImageResource(userIn.profile!!)
     }
-    private fun initSeekbar(){
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                var string = seekBar?.progress.toString() + "KM"
-                distanceKM.text = string
+
+    private fun initBottomNav() {
+        bottomNav.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.feed -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, FeedFragment())
+                        .commit()
+                }
+                R.id.history -> {
+                    Toast.makeText(this, "works", Toast.LENGTH_SHORT).show()
+
+                }
+                R.id.my_advertises -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, MyAdsFragment())
+                        .commit()
+                }
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                km = seekBar!!.progress
-                seekBar.visibility = View.GONE
-            }
-
-        })
-
+            return@setOnItemSelectedListener true
+        }
     }
 }

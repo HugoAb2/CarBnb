@@ -36,5 +36,18 @@
     <string name="type_the_model_of_your_car">Type the model of your car</string>
     <string name="type_description">Type description</string>
     <string name="google_maps_view">Google Maps View</string>
+    <string name="type_car_location">Type car location</string>
+    <string name="type_the_rental_daily_rate">Type the rental daily rate</string>
+    <string name="post_advertise">Post Advertise</string>
+    <string name="my_advertises">My Advertises</string>
+    <string name="comments">Comments</string>
+    <string name="feed">Feed</string>
+    <string name="history">History</string>
+    <string name="list_your_car">List your car</string>
+    <string name="create_advertisement">Create Advertisement</string>
+    <string name="price">Price</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
+    <string name="view_messages">View messages</string>
 
 </resources>

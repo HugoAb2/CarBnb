@@ -81,18 +81,7 @@ class SchedulingActivity : AppCompatActivity() {
         backButton.setOnClickListener { finish() }
 
         mapsButton.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-
-                 ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100
-                )
-            }
-
+            requestLocalPermissions()
             if (ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
@@ -127,6 +116,19 @@ class SchedulingActivity : AppCompatActivity() {
 */        }
     }
 
+    private fun requestLocalPermissions(){
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100
+            )
+        }
+    }
     private fun convertTimeToDate(timeInMilliseconds: Long): String {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val date = Date(timeInMilliseconds)
