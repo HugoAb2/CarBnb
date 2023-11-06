@@ -49,5 +49,12 @@
     <string name="edit">edit</string>
     <string name="delete">delete</string>
     <string name="view_messages">View messages</string>
+    <string name="author_name">Author name</string>
+    <string name="dd_mm_yyy_hh_mm_ss">dd/MM/yyy hh:mm:ss</string>
+    <string name="hi_i_would_like_to_rent_for_this_holiday">Hi I would like to rent for this holiday</string>
+    <string name="type_your_message_here">Type your message here</string>
+    <string name="send">Send</string>
+    <string name="carbnb">CARBNB</string>
+    <string name="messages">Messages</string>
 
 </resources>

@@ -30,10 +30,11 @@ class MyAdvertisesAdapter(private val advertisesList: MutableList<Advertise>, pr
                 onItemClicked(advertise)
             }
             viewButton.setOnClickListener {
+                advertise.carName += " viewOP"
                 onItemClicked(advertise)
             }
             deleteButton.setOnClickListener {
-                advertise.carName = "delete"
+                advertise.carName += " delete"
                 onItemClicked(advertise)
             }
         }

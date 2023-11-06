@@ -39,6 +39,9 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
+            android:name=".MessagesActivity"
+            android:exported="false" />
+        <activity
             android:name=".SchedulingActivity"
             android:exported="false" />
         <activity

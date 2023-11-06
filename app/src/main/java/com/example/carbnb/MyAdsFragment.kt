@@ -55,14 +55,23 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         recyclerView.adapter = MyAdvertisesAdapter(dbUserAdvertises){
-            if(it.carName == "delete") Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+            val code = verifyCode(it.carName)
+            if(code == "delete") Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+            else if (code == "viewOP"){
+                val intent = Intent(requireContext(), MessagesActivity::class.java)
+                startActivity(intent)
+            }
             else{
                 val intent = Intent(requireContext(), AdvertiseActivity::class.java)
                 intent.putExtra("advertise", it)
                 startActivity(intent)
             }
-
         }
+    }
+
+    private fun verifyCode(frase : String): String{
+        val palavras = frase.split("\\s+".toRegex()) // Divide a string em palavras
+        return if (palavras.isNotEmpty()) palavras.last() else ""
     }
 
     override fun onResume() {
