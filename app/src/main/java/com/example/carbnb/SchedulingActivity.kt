@@ -106,14 +106,14 @@ class SchedulingActivity : AppCompatActivity() {
 
             calendar.show(supportFragmentManager, "TAG")
 
-/*            calendar.addOnPositiveButtonClickListener {
+            calendar.addOnPositiveButtonClickListener {
                 val date1 = convertTimeToDate(it.first)
                 val date2 = convertTimeToDate(it.second)
                 val period = "$date1 to $date2"
                 dateButton.text = period
             }
             calendar.addOnNegativeButtonClickListener { calendar.dismiss() }
-*/        }
+        }
     }
 
     private fun requestLocalPermissions(){
