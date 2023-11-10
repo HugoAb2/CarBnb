@@ -1,22 +1,19 @@
-package com.example.carbnb
+package com.example.carbnb.ui
 
-import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
-import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import com.example.carbnb.R
 import com.example.carbnb.databinding.ActivityHomeBinding
 import com.example.carbnb.model.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class HomeActivity : AppCompatActivity() {    
+class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityHomeBinding
 
@@ -64,7 +61,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-        if(it.resultCode == Activity.RESULT_OK){
+        if(it.resultCode == RESULT_OK){
             val data = it.data
             if (data != null && data.getBooleanExtra("delete", false)) {
                 val deleteIntent = Intent(this, LoginActivity::class.java)
@@ -74,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
             }
             else Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
         }
-        if (it.resultCode == Activity.RESULT_CANCELED){
+        if (it.resultCode == RESULT_CANCELED){
             Toast.makeText(this, "Changes not applied", Toast.LENGTH_SHORT).show()
         }
     }

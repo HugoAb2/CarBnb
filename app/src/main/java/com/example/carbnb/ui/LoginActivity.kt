@@ -1,12 +1,12 @@
-package com.example.carbnb
+package com.example.carbnb.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.example.carbnb.adapters.PageAdapter
 import com.example.carbnb.dao.UsersDataSource
 import com.example.carbnb.databinding.ActivityLoginBinding
 import com.example.carbnb.model.User
-import com.example.carbnb.adapters.PageAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -48,8 +48,8 @@ class LoginActivity : AppCompatActivity() {
 
         viewPager.offscreenPageLimit = adapter.itemCount
         val mediator = TabLayoutMediator(
-            tabLayout, viewPager){
-                tab : TabLayout.Tab, position : Int ->
+            tabLayout, viewPager
+        ) { tab: TabLayout.Tab, position: Int ->
             tab.text = adapter.getTitle(position)
         }
         mediator.attach()

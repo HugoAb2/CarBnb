@@ -1,4 +1,4 @@
-package com.example.carbnb
+package com.example.carbnb.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.carbnb.R
 import com.example.carbnb.adapters.AdvertiseAdapter
 import com.example.carbnb.dao.AdvertisesDataSource
 import com.example.carbnb.databinding.FragmentFeedBinding
@@ -48,7 +49,7 @@ class FeedFragment : Fragment(){
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        recyclerView.adapter = AdvertiseAdapter(advertisesList){
+        recyclerView.adapter = AdvertiseAdapter(advertisesList) {
             val intent = Intent(requireContext(), SchedulingActivity::class.java)
             intent.putExtra("advertiseID", it.id.toString())
             startActivity(intent)
@@ -67,7 +68,7 @@ class FeedFragment : Fragment(){
     }
 
     private fun initSeekbar(){
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 var string = seekBar?.progress.toString() + "KM"
                 distanceKM.text = string
