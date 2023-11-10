@@ -18,10 +18,10 @@
         android:theme="@style/Theme.CarBnb"
         tools:targetApi="31">
         <activity
-            android:name=".MapsActivity"
+            android:name=".ui.MapsActivity"
             android:exported="false" />
         <activity
-            android:name=".AdvertiseActivity"
+            android:name=".ui.AdvertiseActivity"
             android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
@@ -39,22 +39,22 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".MessagesActivity"
+            android:name=".ui.MessagesActivity"
             android:exported="false" />
         <activity
-            android:name=".SchedulingActivity"
+            android:name=".ui.SchedulingActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".ui.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".ui.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

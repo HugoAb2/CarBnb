@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:flow_verticalBias="0.30"
-    tools:context=".SingUpFragment">
+    tools:context=".ui.SingUpFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

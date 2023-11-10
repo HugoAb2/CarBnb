@@ -1,4 +1,4 @@
-package com.example.carbnb
+package com.example.carbnb.ui
 
 import android.os.Bundle
 import android.widget.Button
@@ -27,12 +27,15 @@ class MessagesActivity : AppCompatActivity(){
         binding = ActivityMessagesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dbMessage.add(Message(
-            "1",
-            "123",
-            "John Doe",
-            "2023-11-02 14:30:00",
-            "Hello, this is a sample message."))
+        dbMessage.add(
+            Message(
+                "1",
+                "123",
+                "John Doe",
+                "2023-11-02 14:30:00",
+                "Hello, this is a sample message."
+            )
+        )
 
         backButton = binding.gobackarrow
         sendButton = binding.sendButtom

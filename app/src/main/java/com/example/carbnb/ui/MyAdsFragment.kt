@@ -1,4 +1,4 @@
-package com.example.carbnb
+package com.example.carbnb.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.carbnb.adapters.AdvertiseAdapter
+import com.example.carbnb.R
 import com.example.carbnb.adapters.MyAdvertisesAdapter
 import com.example.carbnb.dao.AdvertisesDataSource
 import com.example.carbnb.databinding.FragmentMyadsBinding
@@ -40,28 +40,30 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
         recyclerView = binding.recyclerViewAdvertises
         createButton = binding.createButton
 
-        dbUserAdvertises.add(Advertise(
-            1,
-            "UserID",
-            "Today",
-            "BigBlack Fusca",
-            "$200",
-            "Angry Bulls Street, 34",
-            "rent for weekends",
-            R.drawable.bigblack_fusca,
-            ArrayList()
-        ))
+        dbUserAdvertises.add(
+            Advertise(
+                1,
+                "UserID",
+                "Today",
+                "BigBlack Fusca",
+                "$200",
+                "Angry Bulls Street, 34",
+                "rent for weekends",
+                R.drawable.bigblack_fusca,
+                ArrayList()
+            )
+        )
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        recyclerView.adapter = MyAdvertisesAdapter(dbUserAdvertises){
+        recyclerView.adapter = MyAdvertisesAdapter(dbUserAdvertises) {
             val code = verifyCode(it.carName)
-            if(code == "delete") Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
-            else if (code == "viewOP"){
+            if (code == "delete") Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT)
+                .show()
+            else if (code == "viewOP") {
                 val intent = Intent(requireContext(), MessagesActivity::class.java)
                 startActivity(intent)
-            }
-            else{
+            } else {
                 val intent = Intent(requireContext(), AdvertiseActivity::class.java)
                 intent.putExtra("advertise", it)
                 startActivity(intent)

@@ -1,9 +1,8 @@
-package com.example.carbnb
+package com.example.carbnb.ui
 
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
@@ -12,6 +11,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.carbnb.dao.AdvertisesDataSource
 import com.example.carbnb.databinding.ActivityAdvertiseBinding
@@ -117,7 +117,8 @@ class AdvertiseActivity : AppCompatActivity() {
 
         when {
             granted ->  resultGallery.launch(
-                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            )
 
             shouldShowRequestPermissionRationale(GALLERY_PERMISSION) -> showDialogPermission()
 
@@ -140,7 +141,8 @@ class AdvertiseActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()){ permission ->
             if (permission){
                 resultGallery.launch(
-                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                )
             }else{
                 showDialogPermission()
             }
@@ -178,6 +180,6 @@ class AdvertiseActivity : AppCompatActivity() {
     }
 
     private fun emptyMessage(input : String){
-        Toast.makeText(this, "$input is empty" , Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "$input is empty", Toast.LENGTH_SHORT).show()
     }
 }
