@@ -2,16 +2,21 @@ package com.example.carbnb.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.ViewModelProvider
 import com.example.carbnb.R
 import com.example.carbnb.databinding.ActivityHomeBinding
 import com.example.carbnb.model.User
+import com.example.carbnb.viewmodel.LoginViewModel
+import com.example.carbnb.viewmodel.ProfileViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.squareup.picasso.Picasso
 
 class HomeActivity : AppCompatActivity() {
 
@@ -22,9 +27,6 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var username : TextView
     private lateinit var bottomNav : BottomNavigationView
 
-    //private val userID = FirebaseAuth.getInstance().currentUser!!.uid
-    //private val database = Firebase.database
-    //private val userData = database.getReference("Users")
     private lateinit var userIn : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +46,11 @@ class HomeActivity : AppCompatActivity() {
 
         @Suppress("DEPRECATION")
         userIn = intent.getSerializableExtra("user") as User
+
     }
 
     override fun onResume() {
         super.onResume()
-
-        logUserData()
 
         profileButton.setOnClickListener {
             val profileActivity = Intent(this, ProfileActivity::class.java)
@@ -57,19 +58,34 @@ class HomeActivity : AppCompatActivity() {
             launcher.launch(profileActivity)
         }
 
+    }
 
+    override fun onStart() {
+        super.onStart()
+        logUserData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ViewModelProvider(this).get(LoginViewModel::class.java).logout()
     }
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if(it.resultCode == RESULT_OK){
             val data = it.data
-            if (data != null && data.getBooleanExtra("delete", false)) {
-                val deleteIntent = Intent(this, LoginActivity::class.java)
-                startActivity(deleteIntent)
+            if (data != null && data.getBooleanExtra("logoff", false)) {
+                val logoffIntent = Intent(this, LoginActivity::class.java)
+                startActivity(logoffIntent)
                 finish()
-                Toast.makeText(this, "Profile Deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
             }
-            else Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+            else {
+                userIn.name = data!!.getStringExtra("username").toString()
+                if (data.getBooleanExtra("imageChange", false))
+                    userIn.profile = userIn.id
+                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+
+            }
         }
         if (it.resultCode == RESULT_CANCELED){
             Toast.makeText(this, "Changes not applied", Toast.LENGTH_SHORT).show()
@@ -77,12 +93,23 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun logUserData(){
-        /*userData.child(userID).get().addOnSuccessListener {
-            name = it.child("name").value.toString()
-            username.text = name
-        }*/
         username.text = userIn.name
-        if (userIn.profile != null) profileImage.setImageResource(userIn.profile!!)
+        val viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        if(userIn.profile != null) {
+            viewModel.loadImage(userIn.profile!!)
+            viewModel.opResult.observe(this){result ->
+                when(result){
+                    is ProfileViewModel.OpStats.ReceivedImage ->
+                        Picasso.get().load(viewModel.userImage.value).into(profileImage)
+
+                    is ProfileViewModel.OpStats.Error ->
+                        Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+
+                    else -> return@observe
+                }
+
+            }
+        }
     }
 
     private fun initBottomNav() {

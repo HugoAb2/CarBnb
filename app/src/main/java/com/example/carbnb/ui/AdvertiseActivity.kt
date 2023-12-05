@@ -177,7 +177,7 @@ class AdvertiseActivity : AppCompatActivity() {
             }
         }
         return true
-    }
+    } 
 
     private fun emptyMessage(input : String){
         Toast.makeText(this, "$input is empty", Toast.LENGTH_SHORT).show()

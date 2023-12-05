@@ -2,6 +2,7 @@ package com.example.carbnb.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -61,6 +62,7 @@ class SingInFragment : Fragment(R.layout.fragment_sing_in) {
     private fun startNextActivity(){
         val intent = Intent(requireContext(), HomeActivity::class.java)
         intent.putExtra("user", viewModel.userIn.value)
+        Log.d("TAG", "startNextActivity: ${viewModel.userIn.value.toString()}")
         requireActivity().apply {
             startActivity(intent)
             finish()

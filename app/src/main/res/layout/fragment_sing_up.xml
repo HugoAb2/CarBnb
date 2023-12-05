@@ -37,32 +37,6 @@
                 android:textColorHint="@color/white"
                 android:textColor="@color/white" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/age"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_edittext"
-                    android:hint="@string/age"
-                    android:textColorHint="@color/white"
-                    android:inputType="numberDecimal"
-                    android:maxLength="2"/>
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/countryTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_edittext"
-                    android:layout_marginStart="10dp"
-                    android:inputType="text"
-                    android:maxLength="15"
-                    android:hint="@string/country"
-                    android:textColorHint="@color/white"/>
-            </LinearLayout>
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/emailTxt"
                 android:background="@drawable/bg_edittext"

@@ -78,7 +78,7 @@
             android:layout_marginVertical="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
+            android:enabled="false"
             android:hint="@string/email"
             android:maxWidth="200dp"
             android:textColorHint="@color/white"

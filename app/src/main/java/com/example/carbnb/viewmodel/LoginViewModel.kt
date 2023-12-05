@@ -1,5 +1,6 @@
 package com.example.carbnb.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,8 +14,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import kotlin.random.Random
+
+
 class LoginViewModel : ViewModel() {
 
     sealed class Authentication {
@@ -32,27 +35,37 @@ class LoginViewModel : ViewModel() {
     val userIn: LiveData<User> get() = _userIn
 
     private val auth = FirebaseAuth.getInstance()
-    private val database = Firebase.database
+    private val firebase = FirebaseFirestore.getInstance()
     private val userRepository = UsersDataSource.createUsersList()
 
+    fun logout(){
+        auth.signOut()
+    }
     fun login(email: String, password: String) {
-        val user = userRepository.find{email == it.email}
-
-        if (user == null) {
-            _loginResult.value = Authentication.Error("User not found")
-        } else if (user.password != password) {
-            _loginResult.value = Authentication.Error("Wrong password")
-        } else {
-            _userIn.value = user
-            _loginResult.value = Authentication.Success
-        }
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { authentication ->
+                if (authentication.isSuccessful){
+                    firebase.collection("Users").document(auth.currentUser!!.uid).get().addOnSuccessListener { user ->
+                        _userIn.value = User(
+                            user!!.id,
+                            user.getString("name") ?: "",
+                            user.getString("email") ?: "",
+                            user.getString("password") ?: "",
+                            user.getString("profile")
+                            )
+                        _loginResult.value = Authentication.Success
+                    }
+                }
+            }.addOnFailureListener { exception ->
+                _loginResult.value = Authentication.Error(getErrorMessage(exception))
+            }
     }
 
     fun singUp(name: String, email: String, password: String){
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener{response ->
                 if (response.isSuccessful){
-                    val id = Random.nextInt(0, 1000).toString()
+                    val id = auth.currentUser!!.uid
                     addUserDataToDatabase(User(id, name, email, password, null))
                 }
             }.addOnFailureListener { exception ->
@@ -67,17 +80,15 @@ class LoginViewModel : ViewModel() {
             "password" to user.password,
             "profile" to null
         )
-        database.getReference("Users/${user.id}").setValue(userMap)
+
+        firebase.collection("Users").document(user.id).set(userMap)
             .addOnCompleteListener { response ->
                 if (response.isSuccessful) _singUpResult.value = Authentication.Success
             }.addOnFailureListener { exception ->
-                _singUpResult.value = Authentication.Error(getErrorMessage(exception))
+            _singUpResult.value = Authentication.Error(getErrorMessage(exception))
             }
     }
 
-    fun testing(a : Int, b : Int): Int{
-        return a + b
-    }
     private fun getErrorMessage(exception: Exception): String {
         val errorMessage = when (exception) {
             is FirebaseAuthWeakPasswordException -> "Type a password with 6 or more digits"

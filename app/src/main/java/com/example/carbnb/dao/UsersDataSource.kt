@@ -15,7 +15,7 @@ class UsersDataSource {
                 "adm",
                 "adm@gmail.com",
                 "******",
-                R.drawable.whind))
+                null))
 
             return list
         }
