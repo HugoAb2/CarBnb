@@ -3,7 +3,6 @@ package com.example.carbnb.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.carbnb.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -21,11 +20,10 @@ class ProfileViewModel : ViewModel(){
 
     private val _opResult = MutableLiveData<OpStats>()
     private val _userImage = MutableLiveData<Uri>()
-    private val _userIn = MutableLiveData<User>()
 
     val opResult: LiveData<OpStats> get() = _opResult
     val userImage : LiveData<Uri> get() = _userImage
-    val userIn: LiveData<User> get() = _userIn
+
 
     private val auth = FirebaseAuth.getInstance()
     private val userID = auth.currentUser!!.uid

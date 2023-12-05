@@ -2,7 +2,6 @@ package com.example.carbnb.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -67,7 +66,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        ViewModelProvider(this).get(LoginViewModel::class.java).logout()
+        ViewModelProvider(this)[LoginViewModel::class.java].logout()
     }
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -94,7 +93,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun logUserData(){
         username.text = userIn.name
-        val viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        val viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
         if(userIn.profile != null) {
             viewModel.loadImage(userIn.profile!!)
             viewModel.opResult.observe(this){result ->

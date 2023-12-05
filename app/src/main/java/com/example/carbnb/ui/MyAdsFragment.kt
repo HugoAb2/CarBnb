@@ -2,9 +2,7 @@ package com.example.carbnb.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -25,14 +23,6 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
 
     private val dbUserAdvertises = ArrayList<Advertise>()
     private val dbAdvertises = AdvertisesDataSource.createAdvertisesList()
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,23 +47,25 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         recyclerView.adapter = MyAdvertisesAdapter(dbUserAdvertises) {
-            val code = verifyCode(it.carName)
-            if (code == "delete") Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT)
-                .show()
-            else if (code == "viewOP") {
-                val intent = Intent(requireContext(), MessagesActivity::class.java)
-                startActivity(intent)
-            } else {
-                val intent = Intent(requireContext(), AdvertiseActivity::class.java)
-                intent.putExtra("advertise", it)
-                startActivity(intent)
+            when (verifyCode(it.carName)) {
+                "delete" -> Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT)
+                    .show()
+                "viewOP" -> {
+                    val intent = Intent(requireContext(), MessagesActivity::class.java)
+                    startActivity(intent)
+                }
+                else -> {
+                    val intent = Intent(requireContext(), AdvertiseActivity::class.java)
+                    intent.putExtra("advertise", it)
+                    startActivity(intent)
+                }
             }
         }
     }
 
-    private fun verifyCode(frase : String): String{
-        val palavras = frase.split("\\s+".toRegex()) // Divide a string em palavras
-        return if (palavras.isNotEmpty()) palavras.last() else ""
+    private fun verifyCode(phrase : String): String{
+        val words = phrase.split("\\s+".toRegex()) // Divide a string em palavras
+        return if (words.isNotEmpty()) words.last() else ""
     }
 
     override fun onResume() {

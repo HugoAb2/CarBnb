@@ -1,6 +1,5 @@
 package com.example.carbnb.dao
 
-import com.example.carbnb.R
 import com.example.carbnb.model.User
 
 class UsersDataSource {

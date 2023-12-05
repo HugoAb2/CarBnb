@@ -26,7 +26,7 @@ class SingUpFragment : Fragment(R.layout.fragment_sing_up) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSingUpBinding.bind(view)
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
         name = binding.nameTxt
         email = binding.emailTxt
