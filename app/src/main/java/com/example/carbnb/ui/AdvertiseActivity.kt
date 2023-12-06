@@ -33,8 +33,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Calendar
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -103,34 +101,14 @@ class AdvertiseActivity : AppCompatActivity() {
         }
 
         postButton.setOnClickListener {
-            lifecycleScope.launch {
-                val permissionGranted = requestLocalPermission()
-                if (permissionGranted && nullVerifier() && ::mImageURI.isInitialized) {
-                    viewModel.postAdvertise(
-                        carModel.text.toString(),
-                        price.text.toString(),
-                        description.text.toString(),
-                        location.text.toString(),
-                        mImageURI,
-                        uLatitude,
-                        uLongitude
-                    )
-                    viewModel.opResult.observe(this@AdvertiseActivity) {
-                        when (it) {
-                            is AdvertiseViewModel.OpStats.PostSuccess -> {
-                                binding.loadingIndicator.visibility = View.GONE
-                                Toast.makeText(this@AdvertiseActivity, "Success", Toast.LENGTH_SHORT).show()
-                                finish()
-                            }
-                            is AdvertiseViewModel.OpStats.Error -> {
-                                Toast.makeText(this@AdvertiseActivity, it.message, Toast.LENGTH_SHORT).show()
-                            }
-                            else -> return@observe
-                        }
-                    }
-                }
+            if (createAd){
+                lifecycleScope.launch { postAd()}
+            }else{
+                lifecycleScope.launch { updateAd() }
             }
         }
+
+
     }
     private fun loadAdvertiseData(){
         viewModel.loadImage(advertise.carImage)
@@ -154,6 +132,63 @@ class AdvertiseActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun updateAd(){
+        val permissionGranted = requestLocalPermission()
+        if (permissionGranted && nullVerifier() && ::mImageURI.isInitialized) {
+            viewModel.updateAdvertise(
+                carModel.text.toString(),
+                price.text.toString(),
+                description.text.toString(),
+                location.text.toString(),
+                mImageURI,
+                uLatitude,
+                uLongitude
+            )
+            viewModel.opResult.observe(this@AdvertiseActivity) {
+                when (it) {
+                    is AdvertiseViewModel.OpStats.PostSuccess -> {
+                        binding.loadingIndicator.visibility = View.GONE
+                        Toast.makeText(this@AdvertiseActivity, "Success", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    is AdvertiseViewModel.OpStats.Error -> {
+                        Toast.makeText(this@AdvertiseActivity, it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> return@observe
+                }
+            }
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun postAd(){
+            val permissionGranted = requestLocalPermission()
+            if (permissionGranted && nullVerifier() && ::mImageURI.isInitialized) {
+                viewModel.postAdvertise(
+                    carModel.text.toString(),
+                    price.text.toString(),
+                    description.text.toString(),
+                    location.text.toString(),
+                    mImageURI,
+                    uLatitude,
+                    uLongitude
+                )
+                viewModel.opResult.observe(this@AdvertiseActivity) {
+                    when (it) {
+                        is AdvertiseViewModel.OpStats.PostSuccess -> {
+                            binding.loadingIndicator.visibility = View.GONE
+                            Toast.makeText(this@AdvertiseActivity, "Success", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        is AdvertiseViewModel.OpStats.Error -> {
+                            Toast.makeText(this@AdvertiseActivity, it.message, Toast.LENGTH_SHORT).show()
+                        }
+                        else -> return@observe
+                    }
+                }
+            }
+
+    }
     private fun checkPermissionGallery(){
         when {
             checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) || checkPermission(Manifest.permission.READ_MEDIA_IMAGES) -> {

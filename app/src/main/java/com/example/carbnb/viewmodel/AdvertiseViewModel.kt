@@ -41,6 +41,31 @@ class AdvertiseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    fun updateAdvertise(model : String, price : String, description : String, location : String, image: Uri, latitude: Double, longitude: Double){
+        val date = LocalDate.now()
+            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+
+        val advertiseID =""
+
+        val advertiseMap : MutableMap<String, Any?> = hashMapOf(
+            "carImage" to advertiseID,
+            "model" to model,
+            "price" to price,
+            "description" to description,
+            "date" to date,
+            "location" to location,
+            "latitude" to latitude,
+            "longitude" to longitude
+        ).toMutableMap()
+
+        firebaseAdvertises.document(advertiseID).update(advertiseMap).addOnSuccessListener {
+            postImage(advertiseID, image)
+        }.addOnFailureListener {
+            _opResult.value = OpStats.Error(it.message.toString())
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun postAdvertise(model : String, price : String, description : String, location : String, image: Uri, latitude: Double, longitude: Double){
         val date = LocalDate.now()
             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
