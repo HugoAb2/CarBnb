@@ -1,6 +1,5 @@
 package com.example.carbnb.dao
 
-import com.example.carbnb.R
 import com.example.carbnb.model.Advertise
 
 class AdvertisesDataSource {
@@ -11,70 +10,70 @@ class AdvertisesDataSource {
 
             list.add(
                 Advertise(
-                    1,
+                    "1",
                     "UserID",
                     "Today",
                     "BigBlack Fusca",
                     "Eyes of the face",
                     "Angry Bulls Street, 34",
                     "rent for weekends",
-                    R.drawable.bigblack_fusca,
+                    "whind.png",
                     ArrayList()
                 )
             )
 
             list.add(
                 Advertise(
-                    2,
+                    "2",
                     "UserID",
                     "Today",
                     "BigBlack Fusca",
                     "Eyes of the face",
                     "Angry Bulls Street, 34",
                     "rent for weekends",
-                    R.drawable.bigblack_fusca,
+                    "whind.png",
                     ArrayList()
                 )
             )
 
             list.add(
                 Advertise(
-                    3,
+                    "3",
                     "UserID",
                     "Today",
                     "BigBlack Fusca",
                     "Eyes of the face",
                     "Angry Bulls Street, 34",
                     "rent for weekends",
-                    R.drawable.bigblack_fusca,
+                    "whind.png",
                     ArrayList()
                 )
             )
 
             list.add(
                 Advertise(
-                    4,
+                    "4",
                     "UserID",
                     "Today",
                     "BigBlack Fusca",
                     "Eyes of the face",
                     "Angry Bulls Street, 34",
                     "rent for weekends",
-                    R.drawable.bigblack_fusca,
+                    "whind.png",
                     ArrayList()
                 )
             )
 
             list.add(
                 Advertise(
-                    5,
+                    "5",
                     "UserID",
                     "Today",
                     "BigBlack Fusca",
                     "Eyes of the face",
                     "Angry Bulls Street, 34",
                     "rent for weekends",
-                    R.drawable.bigblack_fusca,
+                    "whind.png",
                     ArrayList()
                 )
             )

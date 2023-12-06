@@ -32,14 +32,14 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
 
         dbUserAdvertises.add(
             Advertise(
-                1,
+                "2",
                 "UserID",
                 "Today",
                 "BigBlack Fusca",
                 "$200",
                 "Angry Bulls Street, 34",
                 "rent for weekends",
-                R.drawable.bigblack_fusca,
+                "whind.png",
                 ArrayList()
             )
         )
@@ -47,7 +47,7 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         recyclerView.adapter = MyAdvertisesAdapter(dbUserAdvertises) {
-            when (verifyCode(it.carName)) {
+            when (verifyCode(it.model)) {
                 "delete" -> Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT)
                     .show()
                 "viewOP" -> {

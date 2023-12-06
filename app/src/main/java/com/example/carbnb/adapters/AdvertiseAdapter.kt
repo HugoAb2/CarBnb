@@ -3,6 +3,7 @@ package com.example.carbnb.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.carbnb.R
 import com.example.carbnb.databinding.ItemAdvertiseBinding
 import com.example.carbnb.model.Advertise
 
@@ -19,7 +20,7 @@ class AdvertiseAdapter(private val advertisesList: MutableList<Advertise>, priva
     override fun onBindViewHolder(holder: AdvertiseViewHolder, position: Int) {
         val advertise = advertisesList[position]
         holder.apply {
-            if (advertise.carImage != null) carImage.setImageResource(advertise.carImage!!)
+            if (advertise.carImage != null) carImage.setImageResource(R.drawable.bigblack_fusca)
             local.text = advertise.location
             description.text = advertise.description
             price.text = advertise.price

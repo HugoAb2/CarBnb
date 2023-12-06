@@ -58,7 +58,6 @@ class ProfileViewModel : ViewModel(){
     }
 
     fun imageUpdate(image : Uri){
-
         imageDatabase.child(userID).putFile(image)
             .addOnSuccessListener {
                 firebaseUserDoc.update("profile", userID)

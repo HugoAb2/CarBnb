@@ -3,7 +3,9 @@ package com.example.carbnb.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -16,7 +18,9 @@ import com.example.carbnb.dao.AdvertisesDataSource
 import com.example.carbnb.dao.UsersDataSource
 import com.example.carbnb.databinding.ActivityScheduleBinding
 import com.example.carbnb.model.Advertise
+import com.example.carbnb.viewmodel.AdvertiseViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,7 +51,7 @@ class SchedulingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         advertiseID = intent.getStringExtra("advertiseID") as String
-        advertise = dbAdvertises.find{ advertiseID == it.id.toString()}!!
+        advertise = dbAdvertises.find{ advertiseID == it.id}!!
 
         backButton = binding.gobackarrow
         carName = binding.carName
@@ -65,9 +69,25 @@ class SchedulingActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        carName.text = advertise.carName
-        if (advertise.carImage != null) carPicture.setImageResource(advertise.carImage!!)
+        val viewModel = AdvertiseViewModel()
+        var mImageURI : Uri
+        carName.text = advertise.model
+        if(advertise.carImage != null) {
+            viewModel.loadImage(advertise.carImage!!)
+            viewModel.opResult.observe(this){result ->
+                when(result){
+                    is AdvertiseViewModel.OpStats.ReceivedImage -> {
+                        mImageURI = viewModel.carImage.value!!
+                        Picasso.get().load(mImageURI).into(carPicture)
+                    }
+                    is AdvertiseViewModel.OpStats.Error -> {
+                        Log.d("TAG", "loadData: ${result.message}")
+                        Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> return@observe
+                }
+            }
+        }
         locationText.text = advertise.location
         description.text = advertise.description
         owner.text = dbUsers.find { advertise.ownerId == it.id }!!.name

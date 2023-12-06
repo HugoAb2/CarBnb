@@ -1,61 +1,81 @@
 package com.example.carbnb.ui
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.carbnb.dao.AdvertisesDataSource
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.carbnb.databinding.ActivityAdvertiseBinding
 import com.example.carbnb.model.Advertise
+import com.example.carbnb.viewmodel.AdvertiseViewModel
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.textfield.TextInputEditText
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import kotlin.random.Random
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class AdvertiseActivity : AppCompatActivity() {
-
-    companion object{
-        private const val GALLERY_PERMISSION = android.Manifest.permission.READ_EXTERNAL_STORAGE
-    }
 
     private lateinit var binding : ActivityAdvertiseBinding
 
     private lateinit var carImg : ImageView
-    private lateinit var carName : TextInputEditText
+    private lateinit var carModel : TextInputEditText
     private lateinit var price : TextInputEditText
     private lateinit var description : TextInputEditText
     private lateinit var location : TextInputEditText
     private lateinit var postButton : Button
+    private lateinit var gobackarrow : ImageView
 
     private var createAd = false
     private lateinit var ownerID : String
     private lateinit var advertise: Advertise
     private lateinit var dialog : AlertDialog
     private lateinit var mImageURI : Uri
+    private var uLatitude : Double = 0.0
+    private var uLongitude : Double = 0.0
 
-    private val dbAdvertises = AdvertisesDataSource.createAdvertisesList()
+    private lateinit var viewModel : AdvertiseViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdvertiseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        viewModel = ViewModelProvider(this)[AdvertiseViewModel::class.java]
 
         verifyOperation()
 
         carImg = binding.carPicture
-        carName = binding.carName
+        carModel = binding.carName
         description = binding.descriptionText
         price = binding.price
         location = binding.locationText
         postButton = binding.confirmButton
+        gobackarrow = binding.gobackarrow
+        gobackarrow.setOnClickListener { finish() }
     }
 
     private fun verifyOperation(){
@@ -72,57 +92,129 @@ class AdvertiseActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (!createAd) {
-            if (advertise.carImage != null) carImg.setImageResource(advertise.carImage!!)
-            carName.setText(advertise.carName)
-            description.setText(advertise.description)
-            price.setText(advertise.price)
-            location.setText(advertise.location)
+            loadAdvertiseData()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-
-        binding.gobackarrow.setOnClickListener { finish() }
-
         carImg.setOnClickListener {
             checkPermissionGallery()
         }
 
         postButton.setOnClickListener {
-            if (nullVerifier()){
-                //dbAdvertises.add(createAdvertise())
-                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
-                finish()
+            lifecycleScope.launch {
+                val permissionGranted = requestLocalPermission()
+                if (permissionGranted && nullVerifier() && ::mImageURI.isInitialized) {
+                    viewModel.postAdvertise(
+                        carModel.text.toString(),
+                        price.text.toString(),
+                        description.text.toString(),
+                        location.text.toString(),
+                        mImageURI,
+                        uLatitude,
+                        uLongitude
+                    )
+                    viewModel.opResult.observe(this@AdvertiseActivity) {
+                        when (it) {
+                            is AdvertiseViewModel.OpStats.PostSuccess -> {
+                                binding.loadingIndicator.visibility = View.GONE
+                                Toast.makeText(this@AdvertiseActivity, "Success", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            is AdvertiseViewModel.OpStats.Error -> {
+                                Toast.makeText(this@AdvertiseActivity, it.message, Toast.LENGTH_SHORT).show()
+                            }
+                            else -> return@observe
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private fun loadAdvertiseData(){
+        viewModel.loadImage(advertise.carImage)
+        viewModel.opResult.observe(this){result ->
+            when(result){
+                is AdvertiseViewModel.OpStats.ReceivedImage -> {
+                    mImageURI = viewModel.carImage.value!!
+                    Picasso.get().load(mImageURI).into(carImg)
+                }
+                is AdvertiseViewModel.OpStats.Error -> {
+                    Log.d("TAG", "loadData: ${result.message}")
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> return@observe
+            }
+        }
+        carModel.setText(advertise.model)
+        description.setText(advertise.description)
+        price.setText(advertise.price)
+        location.setText(advertise.location)
+
+    }
+
+    private fun checkPermissionGallery(){
+        when {
+            checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) || checkPermission(Manifest.permission.READ_MEDIA_IMAGES) -> {
+                resultGallery.launch(
+                    Intent(
+                        Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    )
+                )
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                showDialogPermission()
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES) -> {
+                showDialogPermission()
+            }
+            else -> {
+                requestGallery.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
     }
 
-    private fun createAdvertise(): Advertise {
-        return Advertise(
-            Random.nextInt(1000),
-            ownerID,
-            SimpleDateFormat.getDateInstance()
-                .format(Calendar.getInstance().time),
-            carName.text.toString(),
-            price.text.toString(),
-            location.text.toString(),
-            description.text.toString(),
-            null,
-            ArrayList()
-        )
+    private suspend fun requestLocalPermission(): Boolean {
+        return withContext(Dispatchers.Main) {
+            if (ActivityCompat.checkSelfPermission(
+                    this@AdvertiseActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                requestGPS()
+                val location = suspendCoroutine<Location?> { continuation ->
+                    binding.loadingIndicator.visibility = View.VISIBLE
+                    LocationServices.getFusedLocationProviderClient(this@AdvertiseActivity).lastLocation
+                        .addOnSuccessListener { currentLocation ->
+                            continuation.resume(currentLocation)
+                        }
+                        .addOnFailureListener { e ->
+                            continuation.resume(null)
+                        }
+                }
+                if (location != null) {
+                    uLatitude = location.latitude
+                    uLongitude = location.longitude
+                    true
+                } else {
+                    false
+                }
+            } else {
+                ActivityCompat.requestPermissions(
+                    this@AdvertiseActivity,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100
+                )
+                false
+            }
+        }
     }
 
-    private fun checkPermissionGallery(){
-        val granted = checkPermission(GALLERY_PERMISSION)
-
-        when {
-            granted ->  resultGallery.launch(
-                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            )
-
-            shouldShowRequestPermissionRationale(GALLERY_PERMISSION) -> showDialogPermission()
-
-            else -> requestGallery.launch(GALLERY_PERMISSION)
+    private fun requestGPS(){
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }
     }
 
@@ -165,7 +257,7 @@ class AdvertiseActivity : AppCompatActivity() {
     }
     private fun nullVerifier(): Boolean {
         val fieldsToCheck = listOf(
-            carName to "Car model",
+            carModel to "Car model",
             price to "Price",
             location to "Location"
         )

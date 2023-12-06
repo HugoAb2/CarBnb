@@ -3,13 +3,13 @@ package com.example.carbnb.model
 import java.io.Serializable
 
 data class Advertise (
-    val id : Int,
+    val id : String,
     val ownerId : String,
     var date : String,
-    var carName : String,
+    var model : String,
     var price : String,
     var location : String,
     var description : String?,
-    var carImage : Int?,
+    var carImage : String,
     var messages : MutableList<Message>
 ) : Serializable
