@@ -113,6 +113,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun initBottomNav() {
         bottomNav.setOnItemSelectedListener {
+            val bundle = Bundle()
+            bundle.putString("userID", userIn.id)
             when(it.itemId){
                 R.id.feed -> {
                     supportFragmentManager.beginTransaction()
@@ -124,8 +126,10 @@ class HomeActivity : AppCompatActivity() {
 
                 }
                 R.id.my_advertises -> {
+                    val myAdsFragment = MyAdsFragment()
+                    myAdsFragment.arguments = bundle
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, MyAdsFragment())
+                        .replace(R.id.fragmentContainer, myAdsFragment)
                         .commit()
                 }
             }

@@ -2,6 +2,7 @@ package com.example.carbnb.viewmodel
 
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import com.example.carbnb.model.Advertise
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -18,6 +20,7 @@ class AdvertiseViewModel : ViewModel() {
     sealed class OpStats {
         data object ReceivedImage : OpStats()
         data object PostSuccess : OpStats()
+        data class AdvertisesList(val advertises : ArrayList<Advertise>) : OpStats()
         data object Deleted : OpStats()
         data class Error(val message: String) : OpStats()
     }
@@ -34,6 +37,56 @@ class AdvertiseViewModel : ViewModel() {
     private val firebaseAdvertises = FirebaseFirestore.getInstance().collection("Advertises")
     private val imageDatabase = FirebaseStorage.getInstance().getReference("Cars/")
 
+    suspend fun loadMyAdvertisesList(){
+        val allAdvertises = ArrayList<Advertise>()
+        val querySnapshot = firebaseAdvertises.whereEqualTo("ownerID", userID).get().await()
+        if (querySnapshot != null){
+            Log.d("TAG", "NotNullList: $querySnapshot list size ${querySnapshot.documents.size}")
+            for (document in querySnapshot.documents){
+                Log.d("TAG", "Document: ${document.id}")
+                allAdvertises.add(
+                    Advertise(
+                        document.id,
+                        document.data!!["ownerId"].toString(),
+                        document.data!!["date"].toString(),
+                        document.data!!["model"].toString(),
+                        document.data!!["price"].toString(),
+                        document.data!!["location"].toString(),
+                        document.data!!["latitude"] as Double,
+                        document.data!!["longitude"] as Double,
+                        document.data!!["description"].toString(),
+                        document.data!!["carImage"].toString(),
+                        null
+                    )
+                )
+            }
+            _opResult.value = OpStats.AdvertisesList(allAdvertises)
+        }
+    }
+    suspend fun loadAdvertisesList(){
+        val allAdvertises = ArrayList<Advertise>()
+        val querySnapshot = firebaseAdvertises.whereNotEqualTo("ownerID", userID).get().await()
+        if (querySnapshot != null){
+            for (document in querySnapshot.documents){
+                allAdvertises.add(
+                    Advertise(
+                    document.id,
+                    document.data!!["ownerId"].toString(),
+                    document.data!!["date"].toString(),
+                    document.data!!["model"].toString(),
+                    document.data!!["price"].toString(),
+                    document.data!!["location"].toString(),
+                    document.data!!["latitude"] as Double,
+                    document.data!!["longitude"] as Double,
+                    document.data!!["description"].toString(),
+                    document.data!!["carImage"].toString(),
+                    null
+                    )
+                )
+            }
+            _opResult.value = OpStats.AdvertisesList(allAdvertises)
+        }
+    }
     fun deleteAdvertise(id : String){
         firebaseAdvertises.document(id)
         imageDatabase.child(id)

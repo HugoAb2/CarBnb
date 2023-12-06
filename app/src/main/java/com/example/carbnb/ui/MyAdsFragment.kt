@@ -13,6 +13,7 @@ import com.example.carbnb.adapters.MyAdvertisesAdapter
 import com.example.carbnb.dao.AdvertisesDataSource
 import com.example.carbnb.databinding.FragmentMyadsBinding
 import com.example.carbnb.model.Advertise
+import com.example.carbnb.viewmodel.AdvertiseViewModel
 
 class MyAdsFragment : Fragment(R.layout.fragment_myads) {
 
@@ -21,28 +22,16 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
     private lateinit var recyclerView : RecyclerView
     private lateinit var createButton : Button
 
+    private lateinit var userID : String
     private val dbUserAdvertises = ArrayList<Advertise>()
-    private val dbAdvertises = AdvertisesDataSource.createAdvertisesList()
+    private val dbAdvertises = ArrayList<Advertise>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        userID = arguments?.getString("userID")!!
         binding = FragmentMyadsBinding.bind(view)
         recyclerView = binding.recyclerViewAdvertises
         createButton = binding.createButton
 
-        dbUserAdvertises.add(
-            Advertise(
-                "2",
-                "UserID",
-                "Today",
-                "BigBlack Fusca",
-                "$200",
-                "Angry Bulls Street, 34",
-                "rent for weekends",
-                "whind.png",
-                ArrayList()
-            )
-        )
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -72,7 +61,7 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
         super.onResume()
         createButton.setOnClickListener {
             val intent = Intent(requireContext(), AdvertiseActivity::class.java)
-            intent.putExtra("userID", dbAdvertises[0].ownerId)
+            intent.putExtra("userID", userID)
             startActivity(intent)
         }
     }

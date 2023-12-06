@@ -5,7 +5,7 @@ import com.example.carbnb.model.Advertise
 class AdvertisesDataSource {
     companion object{
 
-        fun createAdvertisesList(): ArrayList<Advertise> {
+    /*    fun createAdvertisesList(): ArrayList<Advertise> {
             val list = ArrayList<Advertise>()
 
             list.add(
@@ -80,6 +80,6 @@ class AdvertisesDataSource {
 
             return list
         }
-
+*/
     }
 }

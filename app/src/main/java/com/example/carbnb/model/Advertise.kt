@@ -9,7 +9,9 @@ data class Advertise (
     var model : String,
     var price : String,
     var location : String,
+    var latitude : Double,
+    var longitude : Double,
     var description : String?,
     var carImage : String,
-    var messages : MutableList<Message>
+    var messages : MutableList<String>?
 ) : Serializable

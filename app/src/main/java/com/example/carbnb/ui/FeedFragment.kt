@@ -7,26 +7,33 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carbnb.R
 import com.example.carbnb.adapters.AdvertiseAdapter
-import com.example.carbnb.dao.AdvertisesDataSource
 import com.example.carbnb.databinding.FragmentFeedBinding
+import com.example.carbnb.model.Advertise
+import com.example.carbnb.viewmodel.AdvertiseViewModel
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.launch
 
 class FeedFragment : Fragment(){
 
     private lateinit var binding: FragmentFeedBinding
+    private lateinit var viewModel : AdvertiseViewModel
 
     private lateinit var distanceButton : ImageView
     private lateinit var distanceKM : TextView
@@ -34,8 +41,8 @@ class FeedFragment : Fragment(){
     private lateinit var recyclerView: RecyclerView
 
     private var km = 0
-
-    private val advertisesList = AdvertisesDataSource.createAdvertisesList()
+    private val emptyList : MutableList<Advertise> = ArrayList<Advertise>().toMutableList()
+    private lateinit var advertiseAdapter : AdvertiseAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,6 +54,7 @@ class FeedFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this)[AdvertiseViewModel::class.java]
         binding = FragmentFeedBinding.bind(view)
 
         distanceButton = binding.locationButton
@@ -56,15 +64,19 @@ class FeedFragment : Fragment(){
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        recyclerView.adapter = AdvertiseAdapter(advertisesList) {
+        advertiseAdapter = AdvertiseAdapter(this , emptyList ){
             val intent = Intent(requireContext(), SchedulingActivity::class.java)
+            Log.d("TAG", "AdvertiseID: ${it.id}")
             intent.putExtra("advertiseID", it.id)
-            startActivity(intent)
+            //startActivity(intent)
         }
+        recyclerView.adapter = advertiseAdapter
     }
 
     override fun onResume() {
         super.onResume()
+
+        lifecycleScope.launch { loadAdsList()}
 
         seekBar = binding.distanceSeekBar
         distanceButton.setOnClickListener {
@@ -73,6 +85,16 @@ class FeedFragment : Fragment(){
         initSeekbar()
     }
 
+    private suspend fun loadAdsList(){
+        viewModel.loadAdvertisesList()
+        viewModel.opResult.observe(viewLifecycleOwner) {opStats ->
+            when(opStats){
+                is AdvertiseViewModel.OpStats.AdvertisesList ->
+                     advertiseAdapter.updateList(opStats.advertises)
+                else -> Toast.makeText(requireContext(), "Fail to Load List", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
     private fun initSeekbar(){
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -87,6 +109,7 @@ class FeedFragment : Fragment(){
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 km = seekBar!!.progress
                 seekBar.visibility = View.GONE
+                requestPermission()
                 //server job
             }
 
@@ -110,7 +133,7 @@ class FeedFragment : Fragment(){
             LocationServices.getFusedLocationProviderClient(requireActivity()).lastLocation
                 .addOnSuccessListener(requireActivity()) {location ->
                     if (location!=null){
-
+                        Log.d("TAG", "Location: [${location.latitude}, ${location.longitude}]")
                         //latitude = location.latitude
                         //longitude = location.longitude
                     }
