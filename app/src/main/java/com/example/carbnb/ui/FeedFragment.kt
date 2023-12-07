@@ -68,7 +68,7 @@ class FeedFragment : Fragment(){
             val intent = Intent(requireContext(), SchedulingActivity::class.java)
             Log.d("TAG", "AdvertiseID: ${it.id}")
             intent.putExtra("advertiseID", it.id)
-            //startActivity(intent)
+            startActivity(intent)
         }
         recyclerView.adapter = advertiseAdapter
     }

@@ -14,8 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.util.Pair
-import com.example.carbnb.dao.AdvertisesDataSource
-import com.example.carbnb.dao.UsersDataSource
+import androidx.lifecycle.ViewModelProvider
 import com.example.carbnb.databinding.ActivityScheduleBinding
 import com.example.carbnb.model.Advertise
 import com.example.carbnb.viewmodel.AdvertiseViewModel
@@ -28,6 +27,7 @@ import java.util.Locale
 class SchedulingActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityScheduleBinding
+    private lateinit var viewModel : AdvertiseViewModel
 
     private lateinit var backButton : ImageView
     private lateinit var carName : TextView
@@ -43,15 +43,14 @@ class SchedulingActivity : AppCompatActivity() {
 
     private lateinit var advertiseID : String
     private lateinit var advertise: Advertise
-    private val dbAdvertises = AdvertisesDataSource.createAdvertisesList()
-    private val dbUsers = UsersDataSource.createUsersList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityScheduleBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        advertiseID = intent.getStringExtra("advertiseID") as String
-        advertise = dbAdvertises.find{ advertiseID == it.id}!!
+        advertiseID = intent.getStringExtra("advertiseID").toString()
+        Log.d("TAG", "onCreate: $advertiseID")
 
         backButton = binding.gobackarrow
         carName = binding.carName
@@ -65,35 +64,33 @@ class SchedulingActivity : AppCompatActivity() {
         confirmButton = binding.confirmButton
         cancelButton = binding.cancelButton
 
+        viewModel = ViewModelProvider(this)[AdvertiseViewModel::class.java]
+        loadData()
     }
 
-    override fun onStart() {
-        super.onStart()
-        val viewModel = AdvertiseViewModel()
+    private fun loadData(){
+        viewModel.loadAdvertise(advertiseID)
         var mImageURI : Uri
-        carName.text = advertise.model
-        if(advertise.carImage != null) {
-            viewModel.loadImage(advertise.carImage!!)
-            viewModel.opResult.observe(this){result ->
-                when(result){
-                    is AdvertiseViewModel.OpStats.ReceivedImage -> {
-                        mImageURI = viewModel.carImage.value!!
-                        Picasso.get().load(mImageURI).into(carPicture)
-                    }
-                    is AdvertiseViewModel.OpStats.Error -> {
-                        Log.d("TAG", "loadData: ${result.message}")
-                        Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
-                    }
-                    else -> return@observe
+
+        viewModel.opResult.observe(this){result ->
+            when(result){
+                is AdvertiseViewModel.OpStats.ReceivedImage -> {
+                    mImageURI = viewModel.carImage.value!!
+                    Picasso.get().load(mImageURI).into(carPicture)
+                    advertise = viewModel.fAdvertise.value!!
+                    carName.text = advertise.model
+                    locationText.text = advertise.location
+                    description.text = advertise.description
+                    owner.text = advertise.ownerId
                 }
+                is AdvertiseViewModel.OpStats.Error -> {
+                    Log.d("TAG", "loadData: ${result.message}")
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> return@observe
             }
         }
-        locationText.text = advertise.location
-        description.text = advertise.description
-        owner.text = dbUsers.find { advertise.ownerId == it.id }!!.name
-
     }
-
     override fun onResume() {
         super.onResume()
         backButton.setOnClickListener { finish() }

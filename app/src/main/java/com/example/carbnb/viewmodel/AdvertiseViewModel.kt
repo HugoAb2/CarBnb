@@ -153,6 +153,26 @@ class AdvertiseViewModel : ViewModel() {
             }
     }
 
+    fun loadAdvertise(id : String){
+        firebaseAdvertises.document(id).get().addOnSuccessListener {document ->
+            if (document.data != null) {
+                _fAdvertise.value = Advertise(
+                    document.id,
+                    document.data!!["ownerID"].toString(),
+                    document.data!!["date"].toString(),
+                    document.data!!["model"].toString(),
+                    document.data!!["price"].toString(),
+                    document.data!!["location"].toString(),
+                    document.data!!["latitude"] as Double,
+                    document.data!!["longitude"] as Double,
+                    document.data!!["description"].toString(),
+                    document.data!!["carImage"].toString(),
+                    null
+                    )
+                loadImage(document.data!!["carImage"] as String)
+            }
+        }
+    }
     fun loadImage(imageId : String){
         imageDatabase.child(imageId).downloadUrl.addOnSuccessListener {
             _carImage.value = it
