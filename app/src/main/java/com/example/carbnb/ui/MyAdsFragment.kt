@@ -2,6 +2,7 @@ package com.example.carbnb.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -49,7 +50,7 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
                             is AdvertiseViewModel.OpStats.Deleted ->
                                 Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
 
-                            else -> Toast.makeText(requireContext(), "Fail", Toast.LENGTH_SHORT).show()
+                            else -> Log.d("TAG", "Delete response")
                         }
                     }
                 }
@@ -86,7 +87,7 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
             when(opStats){
                 is AdvertiseViewModel.OpStats.AdvertisesList ->
                     myAdsAdapter.updateList(opStats.advertises)
-                else -> Toast.makeText(requireContext(), "Fail to Load List", Toast.LENGTH_SHORT).show()
+                else -> Log.d("TAG", "loadAdsList")
             }
         }
     }
