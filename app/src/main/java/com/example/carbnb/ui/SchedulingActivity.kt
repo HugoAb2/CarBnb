@@ -43,6 +43,8 @@ class SchedulingActivity : AppCompatActivity() {
 
     private lateinit var advertiseID : String
     private lateinit var advertise: Advertise
+    private var adLatitude : Double = 0.0
+    private var adLongitude : Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +84,8 @@ class SchedulingActivity : AppCompatActivity() {
                     locationText.text = advertise.location
                     description.text = advertise.description
                     owner.text = advertise.ownerId
+                    adLatitude = advertise.latitude
+                    adLongitude = advertise.longitude
                 }
                 is AdvertiseViewModel.OpStats.Error -> {
                     Log.d("TAG", "loadData: ${result.message}")
@@ -101,8 +105,9 @@ class SchedulingActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
             ){
-
                 val intent = Intent(this, MapsActivity::class.java)
+                intent.putExtra("lat", adLatitude)
+                intent.putExtra("long", adLongitude)
                 startActivity(intent)
             }
 

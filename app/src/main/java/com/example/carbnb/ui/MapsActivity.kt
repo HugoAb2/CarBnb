@@ -39,14 +39,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        val advLat = intent.getDoubleExtra("lat", 0.0)
+        val advLong = intent.getDoubleExtra("long", 0.0)
+        mMap.addMarker(MarkerOptions().position(LatLng(advLat, advLong)).title("Advertise"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(advLat,advLong), 16.0f))
         requestPermission()
-
-        val brazil = LatLng(-8.556731811416357, -54.256461455128644)
-        val quixada = LatLng(-4.913680375031387, -39.03306445243842)
-        mMap.addMarker(MarkerOptions().position(brazil))
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(quixada))
     }
 
     private fun requestPermission(){
@@ -68,7 +65,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             if (location!=null){
                 lastLocation = location
                 val currentLatLong = LatLng(location.latitude, location.longitude)
-                mMap.addMarker(MarkerOptions().position(currentLatLong).title("I am Here"))
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLong))
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLong))
             }
         }
