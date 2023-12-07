@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/carImage"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:text="@string/name"
             android:textColor="@color/white"
             android:textSize="18sp" />
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/carImage"
             android:layout_below="@id/carName"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
             android:text="@string/local"
             android:textColor="@color/white"
             android:textSize="18sp" />
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/carImage"
             android:layout_below="@id/location"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
             android:text="@string/day_month"
             android:textColor="@color/sixty_opacity_white"
             android:textSize="18sp" />
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/carImage"
             android:layout_below="@id/date"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
             android:text="@string/price"
             android:textColor="@color/green"
             android:textSize="18sp" />
@@ -94,7 +94,8 @@
             android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/viewButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:layout_below="@id/descriptionText"
             android:layout_margin="5dp"
             android:text="@string/edit" />
@@ -102,7 +103,7 @@
         <Button
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_below="@id/descriptionText"
             android:layout_alignParentEnd="true"
             android:layout_margin="5dp"

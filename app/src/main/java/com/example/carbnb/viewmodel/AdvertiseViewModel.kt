@@ -87,10 +87,12 @@ class AdvertiseViewModel : ViewModel() {
             _opResult.value = OpStats.AdvertisesList(allAdvertises)
         }
     }
-    fun deleteAdvertise(id : String){
-        firebaseAdvertises.document(id)
-        imageDatabase.child(id)
-        _opResult.value = OpStats.Deleted
+    fun deleteAdvertise(id : String, imageId: String){
+        firebaseAdvertises.document(id).delete().addOnSuccessListener {
+            imageDatabase.child(imageId).delete().addOnSuccessListener {
+                _opResult.value = OpStats.Deleted
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
