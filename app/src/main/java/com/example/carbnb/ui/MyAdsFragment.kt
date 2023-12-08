@@ -47,9 +47,10 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
                     viewModel.deleteAdvertise(it.id, it.carImage)
                     viewModel.opResult.observe(viewLifecycleOwner){opStats ->
                         when(opStats){
-                            is AdvertiseViewModel.OpStats.Deleted ->
+                            is AdvertiseViewModel.OpStats.Deleted -> {
                                 Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
-
+                                lifecycleScope.launch { loadAdsList() }
+                            }
                             else -> Log.d("TAG", "Delete response")
                         }
                     }
