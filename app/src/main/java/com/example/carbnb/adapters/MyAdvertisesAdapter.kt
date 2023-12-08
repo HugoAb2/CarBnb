@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.example.carbnb.R
 import com.example.carbnb.databinding.ItemMyAdvertiseBinding
 import com.example.carbnb.model.Advertise
 import com.example.carbnb.viewmodel.AdvertiseViewModel
@@ -51,6 +50,7 @@ class MyAdvertisesAdapter(private val lifecycleOwner: LifecycleOwner, private va
                         }
                         deleteButton.setOnClickListener {
                             advertise.messages!!.add("delete")
+                            advertisesList.removeAt(position)
                             onItemClicked(advertise)
                         }
                     }

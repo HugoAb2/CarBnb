@@ -61,7 +61,7 @@ class MyAdsFragment : Fragment(R.layout.fragment_myads) {
                 }
                 "edit" -> {
                     val intent = Intent(requireContext(), AdvertiseActivity::class.java)
-                    intent.putExtra("advertiseID", it.id)
+                    intent.putExtra("advertise", it)
                     startActivity(intent)
                 }
             }

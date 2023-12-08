@@ -1,27 +1,27 @@
 package com.example.carbnb.ui
 
 import android.Manifest
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.util.Pair
 import androidx.lifecycle.ViewModelProvider
 import com.example.carbnb.databinding.ActivityScheduleBinding
 import com.example.carbnb.model.Advertise
 import com.example.carbnb.viewmodel.AdvertiseViewModel
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.Calendar
 import java.util.Locale
 
 class SchedulingActivity : AppCompatActivity() {
@@ -108,6 +108,7 @@ class SchedulingActivity : AppCompatActivity() {
                 val intent = Intent(this, MapsActivity::class.java)
                 intent.putExtra("lat", adLatitude)
                 intent.putExtra("long", adLongitude)
+                Log.d("TAG", "Starting Map LatLng: [$adLongitude, $adLongitude]")
                 startActivity(intent)
             }
 
@@ -117,24 +118,31 @@ class SchedulingActivity : AppCompatActivity() {
             finish()
         }
         cancelButton.setOnClickListener { finish() }
-        dateButton.setOnClickListener {
-            val calendar = MaterialDatePicker.Builder.dateRangePicker()
-                .setSelection(
-                    Pair(
-                        MaterialDatePicker.thisMonthInUtcMilliseconds(),
-                        MaterialDatePicker.todayInUtcMilliseconds()
-                    )
-                ).build()
+        dateButton.setOnClickListener{
+            val calendar = Calendar.getInstance()
 
-            calendar.show(supportFragmentManager, "TAG")
+            val datePickerDialog = DatePickerDialog(
+                this,
+                { _: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
+                    val selectedDate = Calendar.getInstance().apply {
+                        set(Calendar.YEAR, year)
+                        set(Calendar.MONTH, month)
+                        set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    }
 
-            calendar.addOnPositiveButtonClickListener {
-                val date1 = convertTimeToDate(it.first)
-                val date2 = convertTimeToDate(it.second)
-                val period = "$date1 to $date2"
-                dateButton.text = period
-            }
-            calendar.addOnNegativeButtonClickListener { calendar.dismiss() }
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val formattedDate = dateFormat.format(selectedDate.time)
+
+                    dateButton.text = formattedDate
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+
+            datePickerDialog.show()
         }
     }
 
@@ -150,11 +158,6 @@ class SchedulingActivity : AppCompatActivity() {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100
             )
         }
-    }
-    private fun convertTimeToDate(timeInMilliseconds: Long): String {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val date = Date(timeInMilliseconds)
-        return dateFormat.format(date)
     }
 
 }

@@ -94,8 +94,7 @@
             android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/viewButton"
             android:layout_below="@id/descriptionText"
             android:layout_margin="5dp"
             android:text="@string/edit" />
@@ -103,10 +102,10 @@
         <Button
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/descriptionText"
             android:layout_alignParentEnd="true"
-            android:layout_margin="5dp"
+            android:layout_margin="8dp"
             android:text="@string/delete"
             android:textColor="@color/white"
             android:background="@drawable/bg_redbutton"/>

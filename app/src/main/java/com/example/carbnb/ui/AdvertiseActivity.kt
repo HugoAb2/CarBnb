@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -46,7 +45,7 @@ class AdvertiseActivity : AppCompatActivity() {
     private lateinit var description : TextInputEditText
     private lateinit var location : TextInputEditText
     private lateinit var postButton : Button
-    private lateinit var gobackarrow : ImageView
+    private lateinit var goBackArrow : ImageView
 
     private var createAd = false
     private lateinit var ownerID : String
@@ -64,16 +63,16 @@ class AdvertiseActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[AdvertiseViewModel::class.java]
 
-        verifyOperation()
-
         carImg = binding.carPicture
         carModel = binding.carName
         description = binding.descriptionText
         price = binding.price
         location = binding.locationText
         postButton = binding.confirmButton
-        gobackarrow = binding.gobackarrow
-        gobackarrow.setOnClickListener { finish() }
+        goBackArrow = binding.gobackarrow
+        goBackArrow.setOnClickListener { finish() }
+
+        verifyOperation()
     }
 
     private fun verifyOperation(){
@@ -84,12 +83,6 @@ class AdvertiseActivity : AppCompatActivity() {
         else if(@Suppress("DEPRECATION") intent.getSerializableExtra("advertise") != null){
             @Suppress("DEPRECATION")
             advertise = intent.getSerializableExtra("advertise") as Advertise
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!createAd) {
             loadAdvertiseData()
         }
     }
@@ -137,6 +130,8 @@ class AdvertiseActivity : AppCompatActivity() {
         val permissionGranted = requestLocalPermission()
         if (permissionGranted && nullVerifier() && ::mImageURI.isInitialized) {
             viewModel.updateAdvertise(
+                advertise.id,
+                advertise.carImage,
                 carModel.text.toString(),
                 price.text.toString(),
                 description.text.toString(),
@@ -219,13 +214,13 @@ class AdvertiseActivity : AppCompatActivity() {
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 requestGPS()
-                val location = suspendCoroutine<Location?> { continuation ->
+                val location = suspendCoroutine { continuation ->
                     binding.loadingIndicator.visibility = View.VISIBLE
                     LocationServices.getFusedLocationProviderClient(this@AdvertiseActivity).lastLocation
                         .addOnSuccessListener { currentLocation ->
                             continuation.resume(currentLocation)
                         }
-                        .addOnFailureListener { e ->
+                        .addOnFailureListener { _ ->
                             continuation.resume(null)
                         }
                 }
